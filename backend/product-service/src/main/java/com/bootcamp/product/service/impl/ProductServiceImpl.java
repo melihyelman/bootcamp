@@ -106,6 +106,22 @@ public class ProductServiceImpl implements ProductService {
         log.info("Product soft deleted: {}", id);
     }
 
+    @Override
+    @Transactional
+    public void decreaseStock(Long productId, Integer quantity) {
+        log.info("Decreasing stock for product id: {} by {}", productId, quantity);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ürün", "id", productId));
+
+        if (product.getStock() < quantity) {
+            throw new com.bootcamp.common.exception.BadRequestException("Yetersiz stok: " + product.getName());
+        }
+
+        product.setStock(product.getStock() - quantity);
+        productRepository.save(product);
+        log.info("Stock updated for product id: {}, new stock: {}", productId, product.getStock());
+    }
+
     private PagedResponse<ProductResponse> buildPagedResponse(Page<Product> productPage) {
         List<ProductResponse> content = productPage.getContent()
                 .stream()

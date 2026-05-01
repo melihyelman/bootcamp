@@ -11,6 +11,8 @@ import com.bootcamp.order.service.PaymentService;
 import com.iyzipay.Options;
 import com.iyzipay.model.*;
 import com.iyzipay.request.CreatePaymentRequest;
+import com.bootcamp.common.event.OrderCreatedEvent;
+import com.bootcamp.common.event.OrderItemEventDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
     private static final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     private final OrderRepository orderRepository;
+    private final org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate;
 
     @Value("${iyzico.api-key}")
     private String apiKey;
@@ -38,6 +41,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Value("${iyzico.base-url}")
     private String baseUrl;
+
+    @Value("${rabbitmq.exchange.name:ecommerce_exchange}")
+    private String exchangeName;
+
+    @Value("${rabbitmq.routing.order.created:order.created}")
+    private String orderCreatedRoutingKey;
 
     @Override
     @Transactional
@@ -123,6 +132,19 @@ public class PaymentServiceImpl implements PaymentService {
                 orderRepository.save(order);
 
                 log.info("Payment successful for order: {}", order.getOrderNumber());
+
+                // Publish event to RabbitMQ
+                List<OrderItemEventDto> eventItems = order.getItems().stream()
+                        .map(item -> new OrderItemEventDto(item.getProductId(), item.getQuantity()))
+                        .toList();
+
+                OrderCreatedEvent event = new OrderCreatedEvent(
+                        order.getOrderNumber(),
+                        userId,
+                        eventItems
+                );
+                rabbitTemplate.convertAndSend(exchangeName, orderCreatedRoutingKey, event);
+                log.info("Published OrderCreatedEvent for order: {}", order.getOrderNumber());
 
                 return PaymentResponse.builder()
                         .paymentId(payment.getPaymentId())
