@@ -113,13 +113,13 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ürün", "id", productId));
 
-        if (product.getStock() < quantity) {
+        if (product.getStockQuantity() < quantity) {
             throw new com.bootcamp.common.exception.BadRequestException("Yetersiz stok: " + product.getName());
         }
 
-        product.setStock(product.getStock() - quantity);
+        product.setStockQuantity(product.getStockQuantity() - quantity);
         productRepository.save(product);
-        log.info("Stock updated for product id: {}, new stock: {}", productId, product.getStock());
+        log.info("Stock updated for product id: {}, new stock: {}", productId, product.getStockQuantity());
     }
 
     private PagedResponse<ProductResponse> buildPagedResponse(Page<Product> productPage) {
