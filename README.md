@@ -132,6 +132,6 @@ mvn compile jib:build -Djib.to.auth.username=YOUR_USER -Djib.to.auth.password=YO
 | `RABBITMQ_PORT` | RabbitMQ Port | `5672` |
 | `RABBITMQ_USER` | RabbitMQ User | `guest` |
 | `RABBITMQ_PASSWORD` | RabbitMQ Pass | `guest` |
-
+ 
 ## 📊 Tech Stack
 Java 21 • Spring Boot 3.3 • Spring Cloud • Maven • PostgreSQL • RabbitMQ • JWT • Iyzico • Docker • Jib • GitHub Actions • AWS
