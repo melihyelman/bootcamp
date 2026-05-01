@@ -2,6 +2,11 @@ server:
   port: 8083
 
 spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
   config:
     import: optional:file:.env[.properties]
   application:
@@ -44,10 +49,3 @@ logging:
 
 loki:
   url: ${LOKI_URL:http://localhost:3100/loki/api/v1/push}
-
-spring:
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USER:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
