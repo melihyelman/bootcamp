@@ -22,6 +22,7 @@ Java 21 + Spring Boot 3.3 microservices project with Maven multi-module structur
 - Maven 3.9+
 - Docker & Docker Compose
 - PostgreSQL (or use Docker)
+- RabbitMQ (or use Docker)
 
 ### Run with Docker Compose
 ```bash
@@ -34,8 +35,8 @@ docker-compose up -d
 
 ### Run Locally (Development)
 ```bash
-# Start PostgreSQL
-docker-compose up -d postgres
+# Start PostgreSQL & RabbitMQ
+docker-compose up -d postgres rabbitmq
 
 # Build common module first
 cd backend && mvn clean install -pl common
@@ -112,6 +113,7 @@ mvn compile jib:build -Djib.to.auth.username=YOUR_USER -Djib.to.auth.password=YO
 
 ## ☁️ Coolify Deployment
 - **PostgreSQL**: Single database instance with logical schemas
+- **RabbitMQ**: Message broker for asynchronous tasks (e.g. stock deduction)
 - **Loki & Grafana**: Centralized lightweight JSON logging
 - **CI/CD**: GitHub Actions pipeline auto-pushing to GHCR and triggering Webhooks
 
@@ -126,6 +128,10 @@ mvn compile jib:build -Djib.to.auth.username=YOUR_USER -Djib.to.auth.password=YO
 | `IYZICO_API_KEY` | Iyzico API key | `sandbox-apikey` |
 | `IYZICO_SECRET_KEY` | Iyzico secret | `sandbox-secretkey` |
 | `LOKI_URL` | Loki URL | `http://localhost:3100` |
+| `RABBITMQ_HOST` | RabbitMQ Host | `localhost` |
+| `RABBITMQ_PORT` | RabbitMQ Port | `5672` |
+| `RABBITMQ_USER` | RabbitMQ User | `guest` |
+| `RABBITMQ_PASSWORD` | RabbitMQ Pass | `guest` |
 
 ## 📊 Tech Stack
-Java 21 • Spring Boot 3.3 • Spring Cloud • Maven • PostgreSQL • JWT • Iyzico • Docker • Jib • GitHub Actions • AWS
+Java 21 • Spring Boot 3.3 • Spring Cloud • Maven • PostgreSQL • RabbitMQ • JWT • Iyzico • Docker • Jib • GitHub Actions • AWS

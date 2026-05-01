@@ -181,7 +181,7 @@ export default function ProductListPage() {
         <Box>
           <Grid container spacing={4} alignItems="stretch">
             {products.map((product, index) => (
-              <Grow in={true} timeout={(index % 8) * 200 + 500} key={product.id}>
+              <Grow in={true} timeout={(index % 12) * 200 + 500} key={product.id}>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
                   <Card
                     sx={{

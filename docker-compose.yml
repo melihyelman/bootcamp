@@ -21,6 +21,24 @@ services:
     networks:
       - bootcamp-network
 
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: bootcamp-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bootcamp-network
+
   # Eureka Server
   eureka-server:
     build:
@@ -89,10 +107,16 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       EUREKA_URI: http://eureka-server:8761/eureka
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
     depends_on:
       postgres:
         condition: service_healthy
       eureka-server:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - bootcamp-network
@@ -113,10 +137,16 @@ services:
       IYZICO_API_KEY: ${IYZICO_API_KEY:-sandbox-apikey}
       IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY:-sandbox-secretkey}
       IYZICO_BASE_URL: https://sandbox-api.iyzipay.com
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
     depends_on:
       postgres:
         condition: service_healthy
       eureka-server:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - bootcamp-network
