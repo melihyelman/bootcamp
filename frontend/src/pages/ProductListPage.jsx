@@ -181,8 +181,8 @@ export default function ProductListPage() {
         <Box>
           <Grid container spacing={4} alignItems="stretch">
             {products.map((product, index) => (
-              <Grow in={true} timeout={(index % 12) * 200 + 500} key={product.id}>
-                <Grid item xs={12} sm={6} md={4} lg={3}>
+              <Grow in={true} timeout={(index % 8) * 200 + 500} key={product.id}>
+                <Grid item xs={12} sm={6} md={3}>
                   <Card
                     sx={{
                       height: '100%',
@@ -216,9 +216,12 @@ export default function ProductListPage() {
                     <Box sx={{ 
                       position: 'relative', 
                       width: '100%', 
-                      paddingTop: '100%', // 1:1 Aspect Ratio
+                      aspectRatio: '1', // Modern way for 1:1 Aspect Ratio
                       bgcolor: '#f8f9fa',
-                      overflow: 'hidden'
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}>
                       <CardMedia
                         className="product-image"
@@ -254,6 +257,7 @@ export default function ProductListPage() {
                           fontSize: '1.1rem', 
                           lineHeight: 1.4, 
                           mb: 2,
+                          height: '2.8em', // Exactly 2 lines height
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
