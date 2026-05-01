@@ -128,10 +128,10 @@ mvn compile jib:build -Djib.to.auth.username=YOUR_USER -Djib.to.auth.password=YO
 | `IYZICO_API_KEY` | Iyzico API key | `sandbox-apikey` |
 | `IYZICO_SECRET_KEY` | Iyzico secret | `sandbox-secretkey` |
 | `LOKI_URL` | Loki URL | `http://localhost:3100` |
-| `RABBITMQ_HOST` | RabbitMQ Host | `localhost` |
-| `RABBITMQ_PORT` | RabbitMQ Port | `5672` |
-| `RABBITMQ_USER` | RabbitMQ User | `guest` |
-| `RABBITMQ_PASSWORD` | RabbitMQ Pass | `guest` |
+| `APP_RABBITMQ_HOST` | RabbitMQ Host | `localhost` |
+| `APP_RABBITMQ_PORT` | RabbitMQ Port | `5672` |
+| `APP_RABBITMQ_USER` | RabbitMQ User | `guest` |
+| `APP_RABBITMQ_PASSWORD` | RabbitMQ Pass | `guest` |
  
 ## 📊 Tech Stack
 Java 21 • Spring Boot 3.3 • Spring Cloud • Maven • PostgreSQL • RabbitMQ • JWT • Iyzico • Docker • Jib • GitHub Actions • AWS
