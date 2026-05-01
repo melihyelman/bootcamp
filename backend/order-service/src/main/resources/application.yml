@@ -1,0 +1,46 @@
+server:
+  port: 8083
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: order-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/order_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+iyzico:
+  api-key: ${IYZICO_API_KEY:sandbox-apikey}
+  secret-key: ${IYZICO_SECRET_KEY:sandbox-secretkey}
+  base-url: ${IYZICO_BASE_URL:https://sandbox-api.iyzipay.com}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.bootcamp.order: DEBUG
+
+loki:
+  url: ${LOKI_URL:http://localhost:3100/loki/api/v1/push}

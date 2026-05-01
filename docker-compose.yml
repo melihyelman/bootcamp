@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: bootcamp-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bootcamp-network
+
+  # Eureka Server
+  eureka-server:
+    build:
+      context: ./backend/eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bootcamp-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+      JWT_SECRET: dGhpcyBpcyBhIHZlcnkgc2VjdXJlIGtleSBmb3IgYm9vdGNhbXAgcHJvamVjdCBqd3QgdG9rZW4=
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - bootcamp-network
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./backend/auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/auth_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      EUREKA_URI: http://eureka-server:8761/eureka
+      JWT_SECRET: dGhpcyBpcyBhIHZlcnkgc2VjdXJlIGtleSBmb3IgYm9vdGNhbXAgcHJvamVjdCBqd3QgdG9rZW4=
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - bootcamp-network
+
+  # Product Service
+  product-service:
+    build:
+      context: ./backend/product-service
+      dockerfile: Dockerfile
+    container_name: product-service
+    ports:
+      - "8082:8082"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/product_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      EUREKA_URI: http://eureka-server:8761/eureka
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - bootcamp-network
+
+  # Order Service
+  order-service:
+    build:
+      context: ./backend/order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    ports:
+      - "8083:8083"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/order_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      EUREKA_URI: http://eureka-server:8761/eureka
+      IYZICO_API_KEY: ${IYZICO_API_KEY:-sandbox-apikey}
+      IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY:-sandbox-secretkey}
+      IYZICO_BASE_URL: https://sandbox-api.iyzipay.com
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - bootcamp-network
+
+volumes:
+  postgres_data:
+
+networks:
+  bootcamp-network:
+    driver: bridge

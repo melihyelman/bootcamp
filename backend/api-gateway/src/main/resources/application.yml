@@ -1,0 +1,62 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # Auth Service - public endpoints
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+
+        # Product Service - public endpoints (GET)
+        - id: product-service-public
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+            - Method=GET
+
+        # Product Service - admin endpoints (POST, PUT, DELETE)
+        - id: product-service-admin
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+            - Method=POST,PUT,DELETE
+          filters:
+            - JwtAuthenticationFilter
+
+        # Order Service - all endpoints require auth
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/cart/**,/api/orders/**,/api/payments/**
+          filters:
+            - JwtAuthenticationFilter
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: ${JWT_SECRET:dGhpcyBpcyBhIHZlcnkgc2VjdXJlIGtleSBmb3IgYm9vdGNhbXAgcHJvamVjdCBqd3QgdG9rZW4=}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    com.bootcamp.gateway: DEBUG
+
+loki:
+  url: ${LOKI_URL:http://localhost:3100/loki/api/v1/push}

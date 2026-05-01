@@ -1,0 +1,46 @@
+server:
+  port: 8081
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: auth-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/auth_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: ${JWT_SECRET:dGhpcyBpcyBhIHZlcnkgc2VjdXJlIGtleSBmb3IgYm9vdGNhbXAgcHJvamVjdCBqd3QgdG9rZW4=}
+  expiration: 86400000  # 24 hours
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.bootcamp.auth: DEBUG
+    org.springframework.security: INFO
+
+loki:
+  url: ${LOKI_URL:http://localhost:3100/loki/api/v1/push}
