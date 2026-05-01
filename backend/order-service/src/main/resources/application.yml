@@ -2,11 +2,6 @@ server:
   port: 8083
 
 spring:
-  rabbitmq:
-    host: ${APP_RABBITMQ_HOST:localhost}
-    port: ${APP_RABBITMQ_PORT:5672}
-    username: ${APP_RABBITMQ_USER:guest}
-    password: ${APP_RABBITMQ_PASSWORD:guest}
   config:
     import: optional:file:.env[.properties]
   application:
@@ -16,6 +11,11 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: ${APP_RABBITMQ_HOST:localhost}
+    port: ${APP_RABBITMQ_PORT:5672}
+    username: ${APP_RABBITMQ_USER:guest}
+    password: ${APP_RABBITMQ_PASSWORD:guest}
   jpa:
     hibernate:
       ddl-auto: update
