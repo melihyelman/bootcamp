@@ -179,10 +179,14 @@ export default function ProductListPage() {
         </Box>
       ) : (
         <Box>
-          <Grid container spacing={4} alignItems="stretch">
+          <Box sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+            gridAutoRows: '1fr',
+            gap: 4
+          }}>
             {products.map((product, index) => (
               <Grow in={true} timeout={(index % 8) * 200 + 500} key={product.id}>
-                <Grid item xs={12} sm={6} md={3}>
                   <Card
                     sx={{
                       height: '100%',
@@ -315,10 +319,9 @@ export default function ProductListPage() {
                       </Button>
                     </CardActions>
                   </Card>
-                </Grid>
               </Grow>
             ))}
-          </Grid>
+          </Box>
 
           {totalPages > 1 && (
             <Box display="flex" justifyContent="center" mt={8}>
