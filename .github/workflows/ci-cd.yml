@@ -37,19 +37,19 @@ jobs:
         run: cd backend && mvn clean install -pl common -am -DskipTests
 
       - name: Build & Push Eureka
-        run: cd backend && mvn compile jib:build -pl eureka-server -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-eureka:latest
+        run: cd backend && mvn clean compile jib:build -pl eureka-server -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-eureka:latest -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
 
       - name: Build & Push Gateway
-        run: cd backend && mvn compile jib:build -pl api-gateway -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-gateway:latest
+        run: cd backend && mvn clean compile jib:build -pl api-gateway -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-gateway:latest -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
 
       - name: Build & Push Auth
-        run: cd backend && mvn compile jib:build -pl auth-service -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-auth:latest
+        run: cd backend && mvn clean compile jib:build -pl auth-service -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-auth:latest -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
 
       - name: Build & Push Product
-        run: cd backend && mvn compile jib:build -pl product-service -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-product:latest
+        run: cd backend && mvn clean compile jib:build -pl product-service -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-product:latest -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
 
       - name: Build & Push Order
-        run: cd backend && mvn compile jib:build -pl order-service -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-order:latest
+        run: cd backend && mvn clean compile jib:build -pl order-service -Dimage=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-order:latest -Djib.container.creationTime=USE_CURRENT_TIMESTAMP
 
   build-and-push-frontend:
     runs-on: ubuntu-latest
